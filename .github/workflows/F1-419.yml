@@ -1,4 +1,4 @@
-name: Build Xiaomi Mix2s (Evolution X 10 A15)
+name: Build Xiaomi Pocophone F1
 
 on:
   workflow_call:
@@ -6,14 +6,14 @@ on:
 
 env:
   # Lingkungan Perangkat
-  DEVICE_NAME : "xiaomi_mix2s"
-  DEVICE_CODENAME : "polaris"
+  DEVICE_NAME : "pocophone f1"
+  DEVICE_CODENAME : "beryllium"
 
   CUSTOM_CMDS : "CLANG_TRIPLE=aarch64-linux-gnu-"
   EXTRA_CMDS : "LD=ld.lld"
 
-  KERNEL_SOURCE : "https://github.com/JackA1ltman/kernel_xiaomi_sdm845_binder_cgroup_v2.git"
-  KERNEL_BRANCH : "staging"
+  KERNEL_SOURCE : "https://github.com/kyzuna28/kyy.git"
+  KERNEL_BRANCH : "nse"
 
   CLANG_SOURCE : "https://github.com/LineageOS/android_prebuilts_clang_kernel_linux-x86_clang-r416183b.git"
   CLANG_BRANCH : "lineage-20.0"
@@ -25,7 +25,7 @@ env:
   GCC_32_BRANCH : "android12L-release"
 
   DEFCONFIG_SOURCE: ""
-  DEFCONFIG_NAME : "vendor/xiaomi/mi845_defconfig"
+  DEFCONFIG_NAME : "defconfig"
   DEFCONFIG_ORIGIN_IMAGE: ""
   DEFCONFIG_FROM_BOOT: false
 
@@ -36,7 +36,7 @@ env:
   KERNELSU_AUTO_FORK : "resukisu" # xxksu, rsuntk , next, resukisu dan sukisu
 
   SUSFS_ENABLE : true
-  SUSFS_FIXED : true
+  SUSFS_FIXED : false
 
   AK3_SOURCE : "https://github.com/osm0sis/AnyKernel3.git"
   AK3_BRANCH : "master"
@@ -46,7 +46,7 @@ env:
   NEED_DTBO : false
   NEED_SAFE_DTBO : false
 
-  ROM_TEXT : "evolution_x_a15"
+  ROM_TEXT : "beryllium"
 
   # Lingkungan Lainnya
   PYTHON_VERSION: "3" # Hanya 2(Ubuntu 22.04 dan Ubuntu 20.04) atau 3(Semua Versi OS).
@@ -57,25 +57,25 @@ env:
   KERNELSU_METHOD: "shell" # shell, manual dan only.
   KERNELSU_SUS_PATCH: "false" # jika Anda membutuhkan patch susfs manual ke kernelsu.
 
-  PATCHES_SOURCE: "JackA1ltman/NonGKI_Kernel_Patches" # [nama_anda]/[patch_anda] -> gooder123/NonGKI_Patcher
+  PATCHES_SOURCE: "kyzuna28/NonGKI_Kernel_Patches" # [nama_anda]/[patch_anda] -> gooder123/NonGKI_Patcher
   PATCHES_BRANCH: "mi_kernel" # [branch_anda] -> main
 
-  SUSFS_FOLDER_FIXED: "mix2s_evox_a15" # Isi dengan direktori awalan (prefix) patch Anda di sini. Kosongkan jika tidak ada. -> folder_anda
+  SUSFS_FOLDER_FIXED: "" # Isi dengan direktori awalan (prefix) patch Anda di sini. Kosongkan jika tidak ada. -> folder_anda
   SUSFS_PATCH_FIXED: "susfs_fixed" # Isi dengan patch Anda di sini. Jika ada beberapa patch, pisahkan dengan koma. Kosongkan jika tidak ada. -> patch1,patch2
 
-  REKERNEL_ENABLE: "true" # jika Anda membutuhkan Re:Kernel.
-  DROIDSPACES_ENABLE: "true" # jika Anda membutuhkan Droidspaces atau LXC/Docker.
+  REKERNEL_ENABLE: "false" # jika Anda membutuhkan Re:Kernel.
+  DROIDSPACES_ENABLE: "false" # jika Anda membutuhkan Droidspaces atau LXC/Docker.
 
   HOOK_METHOD: "syscall" # Metode hook manual -> syscall.
 
-  KERNEL_PATCH: "false" # Jika versi kernel Anda <= 4.9, Anda memiliki opsi untuk mengaktifkan patch guna menambal fungsi kernel_write dan kernel_read.
+  KERNEL_PATCH: "true" # Jika versi kernel Anda <= 4.9, Anda memiliki opsi untuk mengaktifkan patch guna menambal fungsi kernel_write dan kernel_read.
 
   KPM_ENABLE: "false" # Untuk semua perangkat.
   KPM_INLINE: "false" # Hanya gunakan ini untuk SukiSU-Ultra.
   KPM_KPATCH_NEXT: "false" # Jika Anda ingin melakukan hook KPatch-Next pada tahap build.
   KPM_PATCH_SOURCE: "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU_patch/refs/heads/main/kpm/patch_linux" # Jika Anda ingin menggunakan KPM Inline, Anda harus mengatur sumber file eksekusi patch -> raw.githubusercontent.com/Test/Test/patch .
 
-  BASEBAND_GUARD_ENABLE: "true" # jika Anda ingin mencegah penulisan tidak sah ke partisi kritis/node perangkat.
+  BASEBAND_GUARD_ENABLE: "false" # jika Anda ingin mencegah penulisan tidak sah ke partisi kritis/node perangkat.
   BASEBAND_GUARD_BOOT: "false" # jika Anda ingin melindungi partisi boot.
 
   GENERATE_DTB: "false" # jika kernel Anda membutuhkan DTB, tetapi tidak bisa membuatnya secara otomatis. (Hanya Anykernel3).
@@ -84,7 +84,7 @@ env:
   BUILD_DEBUGGER: "false" # Output error saat build.
   SKIP_PATCH: "false" # Abaikan error yang ditemukan di Patch Debugger.
 
-  BUILD_OTHER_CONFIG: "true" # Gabungkan file konfigurasi (config).
+  BUILD_OTHER_CONFIG: "false" # Gabungkan file konfigurasi (config).
   MERGE_CONFIG_FILES: "vendor/xiaomi/polaris.config,vendor/debugfs.config"
 
   FREE_MORE_SPACE: "false" # jika Anda ingin mendapatkan ruang penyimpanan lebih luas, aktifkan ini.
