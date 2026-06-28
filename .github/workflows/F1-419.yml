@@ -1,4 +1,4 @@
-name: Build Poco F1
+name: Build Pocophone F1
 
 on:
   workflow_call:
@@ -16,7 +16,7 @@ on:
         required: true
         default: "vendor/xiaomi/mi845_defconfig"
         type: string
-      # 3. KernelSU
+      # 3. KernelSU Fork
       KERNELSU_AUTO_FORK:
         description: "Versi / Fork KernelSU"
         required: true
@@ -28,7 +28,17 @@ on:
           - rsuntk
           - next
           - sukisu
-      # 4. SUSFS
+      # 4. KernelSU Method
+      KERNELSU_METHOD:
+        description: "Metode KernelSU"
+        required: true
+        default: "shell"
+        type: choice
+        options:
+          - shell
+          - manual
+          - only
+      # 5. SUSFS Enable
       SUSFS_ENABLE:
         description: "Aktifkan SUSFS"
         required: true
@@ -37,13 +47,22 @@ on:
         options:
           - "true"
           - "false"
-      # 5. AK3 (AnyKernel3)
-      AK3_BRANCH:
-        description: "Branch AnyKernel3"
+      # 6. SUSFS Patch Fixed
+      SUSFS_PATCH_FIXED:
+        description: "SUSFS Patch Fixed"
         required: true
-        default: "master"
+        default: "susfs_fixed"
         type: string
-      # 6. Pack Method
+      # 7. Re:Kernel Enable
+      REKERNEL_ENABLE:
+        description: "Aktifkan Re:Kernel"
+        required: true
+        default: "true"
+        type: choice
+        options:
+          - "true"
+          - "false"
+      # 8. Pack Method
       PACK_METHOD:
         description: "Metode Kemas (Pack)"
         required: true
@@ -52,30 +71,15 @@ on:
         options:
           - Anykernel3
           - MKBOOTIMG
-      # 7. Patch Branch
-      PATCHES_BRANCH:
-        description: "Branch Patch (NonGKI)"
-        required: true
-        default: "mi_kernel"
-        type: string
-      # 8. Hook Method
+      # 9. Hook Method
       HOOK_METHOD:
         description: "Metode Hook"
         required: true
         default: "syscall"
         type: string
-      # 9. KPM
+      # 10. KPM Enable
       KPM_ENABLE:
         description: "Aktifkan KPM"
-        required: true
-        default: "false"
-        type: choice
-        options:
-          - "true"
-          - "false"
-      # 10. Debugger
-      BUILD_DEBUGGER:
-        description: "Aktifkan Build Debugger (Output Log Error)"
         required: true
         default: "false"
         type: choice
@@ -91,8 +95,8 @@ env:
   CUSTOM_CMDS: "CLANG_TRIPLE=aarch64-linux-gnu-"
   EXTRA_CMDS: "LD=ld.lld"
 
-  KERNEL_SOURCE: "https://github.com/kyzuna28/kyy.git"
-  KERNEL_BRANCH: ${{ inputs.KERNEL_BRANCH || 'nse' }}
+  KERNEL_SOURCE: "https://github.com/JackA1ltman/kernel_xiaomi_sdm845_binder_cgroup_v2.git"
+  KERNEL_BRANCH: ${{ inputs.KERNEL_BRANCH || 'staging' }}
 
   CLANG_SOURCE: "https://github.com/LineageOS/android_prebuilts_clang_kernel_linux-x86_clang-r416183b.git"
   CLANG_BRANCH: "lineage-20.0"
@@ -104,7 +108,7 @@ env:
   GCC_32_BRANCH: "android12L-release"
 
   DEFCONFIG_SOURCE: ""
-  DEFCONFIG_NAME: ${{ inputs.DEFCONFIG_NAME || 'defconfig' }}
+  DEFCONFIG_NAME: ${{ inputs.DEFCONFIG_NAME || 'vendor/xiaomi/mi845_defconfig' }}
   DEFCONFIG_ORIGIN_IMAGE: ""
   DEFCONFIG_FROM_BOOT: "false"
 
@@ -118,7 +122,7 @@ env:
   SUSFS_FIXED: "true"
 
   AK3_SOURCE: "https://github.com/osm0sis/AnyKernel3.git"
-  AK3_BRANCH: ${{ inputs.AK3_BRANCH || 'master' }}
+  AK3_BRANCH: "master"
 
   BOOT_SOURCE: ""
 
@@ -133,16 +137,16 @@ env:
   PACK_METHOD: ${{ inputs.PACK_METHOD || 'Anykernel3' }}
   PACK_KMODULES: "false" 
 
-  KERNELSU_METHOD: "shell" 
+  KERNELSU_METHOD: ${{ inputs.KERNELSU_METHOD || 'shell' }}
   KERNELSU_SUS_PATCH: "false" 
 
-  PATCHES_SOURCE: "JackA1ltman/NonGKI_Kernel_Patches" 
-  PATCHES_BRANCH: ${{ inputs.PATCHES_BRANCH || 'mi_kernel' }}
+  PATCHES_SOURCE: "kyzuna28/NonGKI_Kernel_Patches" 
+  PATCHES_BRANCH: "mi_kernel" 
 
   SUSFS_FOLDER_FIXED: "mix2s_evox_a15" 
-  SUSFS_PATCH_FIXED: "susfs_fixed" 
+  SUSFS_PATCH_FIXED: ${{ inputs.SUSFS_PATCH_FIXED || 'susfs_fixed' }}
 
-  REKERNEL_ENABLE: "true" 
+  REKERNEL_ENABLE: ${{ inputs.REKERNEL_ENABLE || 'true' }}
   DROIDSPACES_ENABLE: "true" 
 
   HOOK_METHOD: ${{ inputs.HOOK_METHOD || 'syscall' }}
@@ -160,17 +164,17 @@ env:
   GENERATE_DTB: "false" 
   GENERATE_CHIP: "qcom" 
 
-  BUILD_DEBUGGER: ${{ inputs.BUILD_DEBUGGER || 'false' }}
+  BUILD_DEBUGGER: "false" 
   SKIP_PATCH: "false" 
 
-  BUILD_OTHER_CONFIG: "true" 
-  MERGE_CONFIG_FILES: "vendor/xiaomi/polaris.config,vendor/debugfs.config"
+  BUILD_OTHER_CONFIG: "false" 
+  MERGE_CONFIG_FILES: "vendor/xiaomi/beryllium.config,vendor/debugfs.config"
 
   FREE_MORE_SPACE: "false" 
 
 jobs:
   build-kernel:
-    name: Poco F1
+    name: Xiaomi Mix2s (Evolution X 10 A15)
     runs-on: ubuntu-latest
     env:
       CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
@@ -215,4 +219,3 @@ jobs:
 
       - name: ✏️ Upload Artifacts
         uses: ./.github/workflows/upload-files
-        
