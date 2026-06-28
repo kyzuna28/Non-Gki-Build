@@ -1,181 +1,99 @@
-name: Build Pocophone F1
+name: Build Xiaomi Mix2s (Evolution X 10 A15)
 
 on:
   workflow_call:
   workflow_dispatch:
-    inputs:
-      # 1. Kernel Branch
-      KERNEL_BRANCH:
-        description: "Branch Kernel"
-        required: true
-        default: "staging"
-        type: string
-      # 2. Defconfig
-      DEFCONFIG_NAME:
-        description: "Defconfig Name"
-        required: true
-        default: "vendor/xiaomi/mi845_defconfig"
-        type: string
-      # 3. KernelSU Fork
-      KERNELSU_AUTO_FORK:
-        description: "Versi / Fork KernelSU"
-        required: true
-        default: "resukisu"
-        type: choice
-        options:
-          - resukisu
-          - xxksu
-          - rsuntk
-          - next
-          - sukisu
-      # 4. KernelSU Method
-      KERNELSU_METHOD:
-        description: "Metode KernelSU"
-        required: true
-        default: "shell"
-        type: choice
-        options:
-          - shell
-          - manual
-          - only
-      # 5. SUSFS Enable
-      SUSFS_ENABLE:
-        description: "Aktifkan SUSFS"
-        required: true
-        default: "true"
-        type: choice
-        options:
-          - "true"
-          - "false"
-      # 6. SUSFS Patch Fixed
-      SUSFS_PATCH_FIXED:
-        description: "SUSFS Patch Fixed"
-        required: true
-        default: "susfs_fixed"
-        type: string
-      # 7. Re:Kernel Enable
-      REKERNEL_ENABLE:
-        description: "Aktifkan Re:Kernel"
-        required: true
-        default: "true"
-        type: choice
-        options:
-          - "true"
-          - "false"
-      # 8. Pack Method
-      PACK_METHOD:
-        description: "Metode Kemas (Pack)"
-        required: true
-        default: "Anykernel3"
-        type: choice
-        options:
-          - Anykernel3
-          - MKBOOTIMG
-      # 9. Hook Method
-      HOOK_METHOD:
-        description: "Metode Hook"
-        required: true
-        default: "syscall"
-        type: string
-      # 10. KPM Enable
-      KPM_ENABLE:
-        description: "Aktifkan KPM"
-        required: true
-        default: "false"
-        type: choice
-        options:
-          - "true"
-          - "false"
 
 env:
   # Lingkungan Perangkat
-  DEVICE_NAME: "Poco_F1"
-  DEVICE_CODENAME: "beryllium"
+  DEVICE_NAME : "xiaomi_mix2s"
+  DEVICE_CODENAME : "polaris"
 
-  CUSTOM_CMDS: "CLANG_TRIPLE=aarch64-linux-gnu-"
-  EXTRA_CMDS: "LD=ld.lld"
+  CUSTOM_CMDS : "CLANG_TRIPLE=aarch64-linux-gnu-"
+  EXTRA_CMDS : "LD=ld.lld"
 
-  KERNEL_SOURCE: "https://github.com/kyzuna28/kyy.git"
-  KERNEL_BRANCH: ${{ inputs.KERNEL_BRANCH || 'nse' }}
+  KERNEL_SOURCE : "https://github.com/JackA1ltman/kernel_xiaomi_sdm845_binder_cgroup_v2.git"
+  KERNEL_BRANCH : "staging"
 
-  CLANG_SOURCE: "https://github.com/LineageOS/android_prebuilts_clang_kernel_linux-x86_clang-r416183b.git"
-  CLANG_BRANCH: "lineage-20.0"
+  CLANG_SOURCE : "https://github.com/LineageOS/android_prebuilts_clang_kernel_linux-x86_clang-r416183b.git"
+  CLANG_BRANCH : "lineage-20.0"
 
-  GCC_GNU: "false"
-  GCC_64_SOURCE: "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9.git"
-  GCC_64_BRANCH: "android12L-release"
-  GCC_32_SOURCE: "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9.git"
-  GCC_32_BRANCH: "android12L-release"
+  GCC_GNU : false
+  GCC_64_SOURCE : "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9.git"
+  GCC_64_BRANCH : "android12L-release"
+  GCC_32_SOURCE : "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9.git"
+  GCC_32_BRANCH : "android12L-release"
 
   DEFCONFIG_SOURCE: ""
-  DEFCONFIG_NAME: ${{ inputs.DEFCONFIG_NAME || 'vendor/xiaomi/mi845_defconfig' }}
+  DEFCONFIG_NAME : "vendor/xiaomi/mi845_defconfig"
   DEFCONFIG_ORIGIN_IMAGE: ""
-  DEFCONFIG_FROM_BOOT: "false"
+  DEFCONFIG_FROM_BOOT: false
 
-  KERNELSU_SOURCE: ""
-  KERNELSU_BRANCH: ""
+  KERNELSU_SOURCE : ""
+  KERNELSU_BRANCH : ""
 
-  KERNELSU_AUTO_GET: "true"
-  KERNELSU_AUTO_FORK: ${{ inputs.KERNELSU_AUTO_FORK || 'resukisu' }}
+  KERNELSU_AUTO_GET : "true"
+  KERNELSU_AUTO_FORK : "resukisu" # xxksu, rsuntk , next, resukisu dan sukisu
 
-  SUSFS_ENABLE: ${{ inputs.SUSFS_ENABLE || 'true' }}
-  SUSFS_FIXED: "true"
+  SUSFS_ENABLE : true
+  SUSFS_FIXED : true
 
-  AK3_SOURCE: "https://github.com/osm0sis/AnyKernel3.git"
-  AK3_BRANCH: "master"
+  AK3_SOURCE : "https://github.com/osm0sis/AnyKernel3.git"
+  AK3_BRANCH : "master"
 
-  BOOT_SOURCE: ""
+  BOOT_SOURCE : ""
 
-  NEED_DTBO: "false"
-  NEED_SAFE_DTBO: "false"
+  NEED_DTBO : false
+  NEED_SAFE_DTBO : false
 
-  ROM_TEXT: "beryllium"
+  ROM_TEXT : "evolution_x_a15"
 
   # Lingkungan Lainnya
-  PYTHON_VERSION: "3" 
+  PYTHON_VERSION: "3" # Hanya 2(Ubuntu 22.04 dan Ubuntu 20.04) atau 3(Semua Versi OS).
 
-  PACK_METHOD: ${{ inputs.PACK_METHOD || 'Anykernel3' }}
-  PACK_KMODULES: "false" 
+  PACK_METHOD: "Anykernel3" # Anykernel3 membutuhkan SOURCE dan BRANCH, MKBOOTIMG tidak membutuhkannya.
+  PACK_KMODULES: "false" # jika ingin mengemas modul kernel (.ko) ke dalam Anykernel3.
 
-  KERNELSU_METHOD: ${{ inputs.KERNELSU_METHOD || 'shell' }}
-  KERNELSU_SUS_PATCH: "false" 
+  KERNELSU_METHOD: "shell" # shell, manual dan only.
+  KERNELSU_SUS_PATCH: "false" # jika Anda membutuhkan patch susfs manual ke kernelsu.
 
-  PATCHES_SOURCE: "kyzuna28/NonGKI_Kernel_Patches" 
-  PATCHES_BRANCH: "mi_kernel" 
+  PATCHES_SOURCE: "JackA1ltman/NonGKI_Kernel_Patches" # [nama_anda]/[patch_anda] -> gooder123/NonGKI_Patcher
+  PATCHES_BRANCH: "mi_kernel" # [branch_anda] -> main
 
-  SUSFS_FOLDER_FIXED: "mix2s_evox_a15" 
-  SUSFS_PATCH_FIXED: ${{ inputs.SUSFS_PATCH_FIXED || 'susfs_fixed' }}
+  SUSFS_FOLDER_FIXED: "mix2s_evox_a15" # Isi dengan direktori awalan (prefix) patch Anda di sini. Kosongkan jika tidak ada. -> folder_anda
+  SUSFS_PATCH_FIXED: "susfs_fixed" # Isi dengan patch Anda di sini. Jika ada beberapa patch, pisahkan dengan koma. Kosongkan jika tidak ada. -> patch1,patch2
 
-  REKERNEL_ENABLE: ${{ inputs.REKERNEL_ENABLE || 'true' }}
-  DROIDSPACES_ENABLE: "true" 
+  REKERNEL_ENABLE: "true" # jika Anda membutuhkan Re:Kernel.
+  DROIDSPACES_ENABLE: "true" # jika Anda membutuhkan Droidspaces atau LXC/Docker.
 
-  HOOK_METHOD: ${{ inputs.HOOK_METHOD || 'syscall' }}
+  HOOK_METHOD: "syscall" # Metode hook manual -> syscall.
 
-  KERNEL_PATCH: "false" 
+  KERNEL_PATCH: "false" # Jika versi kernel Anda <= 4.9, Anda memiliki opsi untuk mengaktifkan patch guna menambal fungsi kernel_write dan kernel_read.
 
-  KPM_ENABLE: ${{ inputs.KPM_ENABLE || 'false' }}
-  KPM_INLINE: "false" 
-  KPM_KPATCH_NEXT: "false" 
-  KPM_PATCH_SOURCE: "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU_patch/refs/heads/main/kpm/patch_linux" 
+  KPM_ENABLE: "false" # Untuk semua perangkat.
+  KPM_INLINE: "false" # Hanya gunakan ini untuk SukiSU-Ultra.
+  KPM_KPATCH_NEXT: "false" # Jika Anda ingin melakukan hook KPatch-Next pada tahap build.
+  KPM_PATCH_SOURCE: "https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU_patch/refs/heads/main/kpm/patch_linux" # Jika Anda ingin menggunakan KPM Inline, Anda harus mengatur sumber file eksekusi patch -> raw.githubusercontent.com/Test/Test/patch .
 
-  BASEBAND_GUARD_ENABLE: "true" 
-  BASEBAND_GUARD_BOOT: "false" 
+  BASEBAND_GUARD_ENABLE: "true" # jika Anda ingin mencegah penulisan tidak sah ke partisi kritis/node perangkat.
+  BASEBAND_GUARD_BOOT: "false" # jika Anda ingin melindungi partisi boot.
 
-  GENERATE_DTB: "false" 
-  GENERATE_CHIP: "qcom" 
+  GENERATE_DTB: "false" # jika kernel Anda membutuhkan DTB, tetapi tidak bisa membuatnya secara otomatis. (Hanya Anykernel3).
+  GENERATE_CHIP: "qcom" # hanya didukung untuk qcom dan mediatek.
 
-  BUILD_DEBUGGER: "false" 
-  SKIP_PATCH: "false" 
+  BUILD_DEBUGGER: "false" # Output error saat build.
+  SKIP_PATCH: "false" # Abaikan error yang ditemukan di Patch Debugger.
 
-  BUILD_OTHER_CONFIG: "false" 
-  MERGE_CONFIG_FILES: "vendor/xiaomi/beryllium.config,vendor/debugfs.config"
+  BUILD_OTHER_CONFIG: "true" # Gabungkan file konfigurasi (config).
+  MERGE_CONFIG_FILES: "vendor/xiaomi/polaris.config,vendor/debugfs.config"
 
-  FREE_MORE_SPACE: "false" 
+  FREE_MORE_SPACE: "false" # jika Anda ingin mendapatkan ruang penyimpanan lebih luas, aktifkan ini.
 
 jobs:
   build-kernel:
     name: Xiaomi Mix2s (Evolution X 10 A15)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # bisa diganti ke ubuntu 22.04, dan memerlukan pengaturan container ubuntu-latest
+    # container: archlinux/archlinux:latest # jika Anda perlu menggunakan arch linux -> archlinux/archlinux:latest atau ubuntu 20.04 -> ubuntu:focal
     env:
       CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
       CCACHE_NOHASHDIR: "true"
@@ -183,12 +101,12 @@ jobs:
 
     steps:
       - name: ⏰ Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: ⌛️ Compilation environment preparation
         uses: ./.github/workflows/build-env
 
-      - name: ⚙️ Get necessary tools
+      - name: ⚙️ Get neccssary tools
         uses: ./.github/workflows/build-ready
 
       - name: 🪝 Patch Kernel of SUSFS
@@ -199,7 +117,9 @@ jobs:
 
       - name: 🪛 Extra Kernel Options
         run: |
+          # Hanya ${{ env.DEVICE_NAME }} yang menggunakan ini.
           cd $GITHUB_WORKSPACE/device_kernel
+
           # Tidak ada apa-apa
 
       - name: 🧰 Patch Kernel of Re:Kernel
